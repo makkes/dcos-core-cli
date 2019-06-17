@@ -11,6 +11,7 @@ import sys
 import zipfile
 
 from distutils.version import LooseVersion
+import toml
 from urllib.parse import urlparse
 
 from dcos import config, constants, http, util
@@ -69,13 +70,20 @@ def get_package_commands(package_name):
                                "Scripts")
 
     executables = []
-    for filename in os.listdir(bin_dir):
-        path = os.path.join(bin_dir, filename)
+    plugin_toml = os.path.join(os.path.join(bin_dir, os.pardir), "plugin.toml")
+    if os.path.exists(plugin_toml):
+        with open(plugin_toml, "r", encoding="utf-8") as fp:
+            plugin = toml.load(fp)
+            for command in plugin["commands"]:
+                executables.append(command["name"])
+    else:
+        for filename in os.listdir(bin_dir):
+            path = os.path.join(bin_dir, filename)
 
-        if (filename.startswith(constants.DCOS_COMMAND_PREFIX) and
-                _is_executable(path)):
+            if (filename.startswith(constants.DCOS_COMMAND_PREFIX) and
+                    _is_executable(path)):
 
-            executables.append(path)
+                executables.append(path)
 
     return executables
 

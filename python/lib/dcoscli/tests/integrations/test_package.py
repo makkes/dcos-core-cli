@@ -336,7 +336,7 @@ def test_uninstall_cli_only_when_no_apps_remain():
             b'[0.1.0]\n'
             b'Installing CLI subcommand for package [helloworld] '
             b'version [0.1.0]\n'
-            b'New command available: dcos ' +
+            b'New command available: ' +
             _executable_name(b'helloworld') +
             b'\nA sample post-installation message\n'
         )
